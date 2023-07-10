@@ -1,2 +1,2 @@
-# desafio-enecom
+# desafio-enacom
 Desafio enecom de otimização e Python
