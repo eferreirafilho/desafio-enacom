@@ -4,7 +4,7 @@ from deap import base, creator, tools, algorithms
 import matplotlib.pyplot as plt  # Add this line to import matplotlib
 
 # Read data from CSV
-data = pd.read_csv('data.csv', sep=';', header=None, names=['Investment', 'Cost', 'Return', 'Risk'])
+data = pd.read_csv('fake_data.csv', sep=';', header=None, names=['Investment', 'Cost', 'Return', 'Risk'])
 
 # Data
 n = len(data)  # number of investment options
@@ -17,9 +17,6 @@ M = [1 if r == 1 else 0 for r in data['Risk'].values]  # Medium risk investments
 H = [1 if r == 2 else 0 for r in data['Risk'].values]  # High risk investments
 
 available_capital = 2400000  # Available capital (modify this according to your scenario)
-
-
-optimal_ROI = 2200000  # Available capital (modify this according to your scenario)
 
 cost_limit = [1200000, 1500000, 900000] # Low, Medium, High
 minimum_per_category = [2, 2, 1]
@@ -48,12 +45,6 @@ def evaluate(individual):
     total_med_risk_cost = np.dot(individual, C * M)
     total_high_risk_cost = np.dot(individual, C * H)
     
-    # if total_cost < 2220000:
-        # return -1
-
-    if total_cost < optimal_ROI:
-        return -1
-
     if total_cost > available_capital:
         return -1,  # invalid solution
     if total_low_risk < minimum_per_category[0] or total_med_risk < minimum_per_category[1] or total_high_risk < minimum_per_category[2]:
@@ -70,7 +61,7 @@ toolbox.register("select", tools.selTournament, tournsize=3)
 
 # Genetic Algorithm execution
 def main():
-    pop = toolbox.population(n=300)
+    pop = toolbox.population(n=1000)
     hof = tools.HallOfFame(1)
     stats = tools.Statistics(lambda ind: ind.fitness.values)
     stats.register("avg", np.mean)
@@ -78,7 +69,7 @@ def main():
     stats.register("min", np.min)
     stats.register("max", np.max)
 
-    pop, log = algorithms.eaSimple(pop, toolbox, cxpb=0.5, mutpb=0.2, ngen=50, stats=stats, halloffame=hof, verbose=True)
+    pop, log = algorithms.eaSimple(pop, toolbox, cxpb=0.5, mutpb=0.2, ngen=200, stats=stats, halloffame=hof, verbose=True)
 
     return pop, log, hof
 if __name__ == "__main__":
