@@ -47,6 +47,32 @@ class TestInvestmentOptimizer(unittest.TestCase):
         self.assertEqual(self.optimizer.available_minus_spent, expected_available_minus_spent)
         self.assertEqual(self.optimizer.status, expected_status)  # Now this should work
 
+    def test_invalid_input_file(self):
+        with self.assertRaises(ValueError):
+            optimizer = InvestmentOptimizer("", available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1])
+
+    def test_file_not_found(self):
+        with self.assertRaises(ValueError):
+            optimizer = InvestmentOptimizer("non_existent.csv", available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1])
+
+    def test_empty_data_file(self):
+        with open('empty.csv', 'w') as f:
+            pass
+        with self.assertRaises(ValueError):
+            optimizer = InvestmentOptimizer('empty.csv', available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1])
+        os.remove('empty.csv')
+
+    def test_invalid_available_capital(self):
+        with self.assertRaises(ValueError):
+            optimizer = InvestmentOptimizer(self.test_file, available_capital = -2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1])
+
+    def test_infeasible_problem(self):
+        with self.assertRaises(ValueError):
+            optimizer = InvestmentOptimizer(self.test_file, available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [20, 20, 20])
+            optimizer.define_problem()
+            optimizer.solve()
+            optimizer.get_results()
+
 
 if __name__ == '__main__':
     unittest.main()

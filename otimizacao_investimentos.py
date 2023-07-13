@@ -56,6 +56,8 @@ class InvestmentOptimizer:
         self.prob.solve(pulp.PULP_CBC_CMD(msg=True))
 
     def get_results(self):
+        if self.prob.status != LpStatusOptimal:
+            raise ValueError('The problem is infeasible.')
         total_spent = 0
         investments = {"Low Risk": [], "Medium Risk": [], "High Risk": []}
         risk_dict = {0: "Low Risk", 1: "Medium Risk", 2: "High Risk"}
