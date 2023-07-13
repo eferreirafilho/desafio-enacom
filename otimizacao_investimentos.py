@@ -2,9 +2,17 @@ import pandas as pd
 from pulp import *
 
 class InvestmentOptimizer:
-
     def __init__(self, data_file, available_capital, cost_limit, minimum_per_category, maximum_medium_investment):
-        self.data = pd.read_csv(data_file, sep=';', header=None, names=['Investment', 'Cost', 'Return', 'Risk'])
+        try:
+            self.data = pd.read_csv(data_file, sep=';', header=None, names=['Investment', 'Cost', 'Return', 'Risk'])
+        except Exception as e:
+            print(f"Error loading data file: {e}")
+            raise
+        if self.data.empty:
+            raise ValueError("Data file is empty")
+        if not isinstance(available_capital, (int, float)) or available_capital <= 0:
+            raise ValueError("Available capital should be a positive number.")
+
         self.available_capital = available_capital
         self.cost_limit = cost_limit
         self.minimum_per_category = minimum_per_category
@@ -34,7 +42,7 @@ class InvestmentOptimizer:
         prob += lpSum([chosen_investments[i] * investment_costs[i] * high_risk_category[i] for i in range(number_of_investment_options)]) <= self.cost_limit[2], "High_Risk_Max_Cost"
         
         # Extra constraint
-        prob += lpSum([chosen_investments[i] * medium_risk_category[i] for i in range(number_of_investment_options)]) <= self.maximum_medium_investment[0], "Medium_Risk_Max"
+        prob += lpSum([chosen_investments[i] * medium_risk_category[i] for i in range(number_of_investment_options)]) <= self.maximum_medium_investment, "Medium_Risk_Max"
 
         self.prob = prob
         self.chosen_investments = chosen_investments
@@ -66,8 +74,8 @@ class InvestmentOptimizer:
                     investments["High Risk"].append(investment_info['Investment'])
 
         print(f"\nInvestments by risk category:")
-        for category, investments in investments.items():
-            print(f"{category}: {investments}")
+        for category, investment_list in investments.items():
+            print(f"{category}: {investment_list}")
 
         print(f"\nTotal ROI = {self.prob.objective.value()}")
         print(f"Total Spent = {total_spent}")
@@ -75,9 +83,10 @@ class InvestmentOptimizer:
 
         print(f"Status: {LpStatus[self.prob.status]}")
 
-
-# cost_limit = []
-optimizer = InvestmentOptimizer('data.csv', available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1], maximum_medium_investment = [5])
-optimizer.define_problem()
-optimizer.solve()
-optimizer.get_results()
+try:
+    optimizer = InvestmentOptimizer('data.csv', available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1], maximum_medium_investment = 10)
+    optimizer.define_problem()
+    optimizer.solve()
+    optimizer.get_results()
+except Exception as e:
+    print(f"An error occurred: {e}")
