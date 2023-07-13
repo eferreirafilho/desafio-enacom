@@ -2,7 +2,13 @@ import pandas as pd
 from pulp import *
 
 class InvestmentOptimizer:
-    def __init__(self, data_file, available_capital, cost_limit, minimum_per_category, maximum_medium_investment):
+    def __init__(self, data_file, available_capital, cost_limit, minimum_per_category):
+        if not data_file:
+            raise ValueError("No data file provided")
+        try:
+            self.data = pd.read_csv(data_file, sep=';', header=None, names=['Investment', 'Cost', 'Return', 'Risk'])
+        except FileNotFoundError:
+            raise ValueError(f"Could not find data file: {data_file}")
         try:
             self.data = pd.read_csv(data_file, sep=';', header=None, names=['Investment', 'Cost', 'Return', 'Risk'])
         except Exception as e:
@@ -16,7 +22,6 @@ class InvestmentOptimizer:
         self.available_capital = available_capital
         self.cost_limit = cost_limit
         self.minimum_per_category = minimum_per_category
-        self.maximum_medium_investment = maximum_medium_investment
 
     def define_problem(self):
         number_of_investment_options = len(self.data)
@@ -41,9 +46,6 @@ class InvestmentOptimizer:
         prob += lpSum([chosen_investments[i] * investment_costs[i] * medium_risk_category[i] for i in range(number_of_investment_options)]) <= self.cost_limit[1], "Medium_Risk_Max_Cost"
         prob += lpSum([chosen_investments[i] * investment_costs[i] * high_risk_category[i] for i in range(number_of_investment_options)]) <= self.cost_limit[2], "High_Risk_Max_Cost"
         
-        # Extra constraint
-        prob += lpSum([chosen_investments[i] * medium_risk_category[i] for i in range(number_of_investment_options)]) <= self.maximum_medium_investment, "Medium_Risk_Max"
-
         self.prob = prob
         self.chosen_investments = chosen_investments
         self.low_risk_category = low_risk_category
@@ -73,18 +75,23 @@ class InvestmentOptimizer:
                 elif self.high_risk_category[i] == 1:
                     investments["High Risk"].append(investment_info['Investment'])
 
+        self.investments = investments
+        self.total_roi = self.prob.objective.value()
+        self.total_spent = total_spent
+        self.available_minus_spent = self.available_capital - total_spent
+
         print(f"\nInvestments by risk category:")
-        for category, investment_list in investments.items():
+        for category, investment_list in self.investments.items():
             print(f"{category}: {investment_list}")
 
-        print(f"\nTotal ROI = {self.prob.objective.value()}")
-        print(f"Total Spent = {total_spent}")
-        print(f"Available - Spent = {self.available_capital - total_spent}")
+        print(f"\nTotal ROI = {self.total_roi}")
+        print(f"Total Spent = {self.total_spent}")
+        print(f"Available - Spent = {self.available_minus_spent}")
 
         print(f"Status: {LpStatus[self.prob.status]}")
-
+        self.status = LpStatus[self.prob.status]
 try:
-    optimizer = InvestmentOptimizer('data.csv', available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1], maximum_medium_investment = 10)
+    optimizer = InvestmentOptimizer('data.csv', available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1])
     optimizer.define_problem()
     optimizer.solve()
     optimizer.get_results()
