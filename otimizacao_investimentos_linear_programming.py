@@ -2,20 +2,22 @@ import pandas as pd
 from pulp import *
 
 class InvestmentOptimizer:
-    def __init__(self, data_file, available_capital, cost_limit, minimum_per_category):
-        if not data_file:
-            raise ValueError("No data file provided")
-        try:
-            self.data = pd.read_csv(data_file, sep=';', header=None, names=['Investment', 'Cost', 'Return', 'Risk'])
-        except FileNotFoundError:
-            raise ValueError(f"Could not find data file: {data_file}")
-        try:
-            self.data = pd.read_csv(data_file, sep=';', header=None, names=['Investment', 'Cost', 'Return', 'Risk'])
-        except Exception as e:
-            print(f"Error loading data file: {e}")
-            raise
+    def __init__(self, data, available_capital, cost_limit, minimum_per_category):
+        if data is None:
+            raise ValueError("No data provided")
+        if isinstance(data, str):
+            try:
+                self.data = pd.read_csv(data, sep=';', header=None, names=['Investment', 'Cost', 'Return', 'Risk'])
+            except FileNotFoundError:
+                raise ValueError(f"Could not find data file: {data}")
+            except Exception as e:
+                print(f"Error loading data file: {e}")
+                raise
+        else:
+            raise TypeError("Data should be a file path (str).")
         if self.data.empty:
             raise ValueError("Data file is empty")
+        
         if not isinstance(available_capital, (int, float)) or available_capital <= 0:
             raise ValueError("Available capital should be a positive number.")
 
@@ -54,15 +56,17 @@ class InvestmentOptimizer:
 
     def solve(self):
         self.prob.solve(pulp.PULP_CBC_CMD(msg=True))
-
+        
     def get_results(self):
         if self.prob.status != LpStatusOptimal:
             raise ValueError('The problem is infeasible.')
         total_spent = 0
+        solution = []  # For storing the solution
         investments = {"Low Risk": [], "Medium Risk": [], "High Risk": []}
         risk_dict = {0: "Low Risk", 1: "Medium Risk", 2: "High Risk"}
 
         for i in range(len(self.data)):
+            solution.append(int(self.chosen_investments[i].value()))  # Save the solution
             if self.chosen_investments[i].value() == 1.0:
                 investment_info = self.data.iloc[i]
                 risk_category = risk_dict[investment_info['Risk']] 
@@ -92,10 +96,19 @@ class InvestmentOptimizer:
 
         print(f"Status: {LpStatus[self.prob.status]}")
         self.status = LpStatus[self.prob.status]
-try:
-    optimizer = InvestmentOptimizer('data.csv', available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1])
-    optimizer.define_problem()
-    optimizer.solve()
-    optimizer.get_results()
-except Exception as e:
-    print(f"An error occurred: {e}")
+        
+        return solution
+
+    def save_results(self, solution):
+        df = pd.DataFrame([solution])  # Notice the brackets around solution, it makes solution a row instead of a column
+        df.to_csv('solutions.csv', index=False, header=False)
+
+if __name__ == "__main__":
+    try:
+        optimizer = InvestmentOptimizer('data.csv', available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1])
+        optimizer.define_problem()
+        optimizer.solve()
+        solution = optimizer.get_results()  # Get the solution
+        optimizer.save_results(solution)  # Save the solution to a CSV file
+    except Exception as e:
+        print(f"An error occurred: {e}")

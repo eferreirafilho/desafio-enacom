@@ -1,5 +1,5 @@
 import unittest
-from otimizacao_investimentos import InvestmentOptimizer
+from otimizacao_investimentos_linear_programming import InvestmentOptimizer
 import os
 import pandas as pd
 
@@ -72,7 +72,6 @@ class TestInvestmentOptimizer(unittest.TestCase):
             optimizer.define_problem()
             optimizer.solve()
             optimizer.get_results()
-
 
 if __name__ == '__main__':
     unittest.main()
