@@ -2,8 +2,7 @@ import pandas as pd
 from pulp import *
 
 class InvestmentOptimizer:
-    def __init__(self, data, available_capital, cost_limit, minimum_per_category, singleobjective, previous_solution=None):
-        self.previous_solutions = [] 
+    def __init__(self, data, available_capital, cost_limit, minimum_per_category, singleobjective):
         if data is None:
             raise ValueError("No data provided")
         if isinstance(data, str):
@@ -40,15 +39,19 @@ class InvestmentOptimizer:
 
         chosen_investments = LpVariable.dicts("Investment", range(number_of_investment_options), cat='Binary')
         total_spent = lpSum([chosen_investments[i] * investment_costs[i] for i in range(number_of_investment_options)])
-        print(self.previous_solutions)
         
-        if self.previous_solutions:
-            for previous_solution in self.previous_solutions:
-                prob += (lpSum(chosen_investments[i] for i in range(len(self.data)) if previous_solution[i] == 1) <= len(previous_solution) - 2)
-                prob += (lpSum(chosen_investments[i] for i in range(len(self.data)) if previous_solution[i] == 0) >= 1)
-        
-        # Maximize ROI
-        prob += lpSum([chosen_investments[i] * return_of_investments[i] for i in range(number_of_investment_options)])
+        if self.singleobjective:
+            prob += lpSum([chosen_investments[i] * return_of_investments[i] for i in range(number_of_investment_options)])
+        else:
+        # Objective components
+            total_roi = lpSum([chosen_investments[i] * return_of_investments[i] for i in range(number_of_investment_options)])
+
+            # Define weights
+            weight_roi = 0.9  # Adjust these weights according to your preference
+            weight_spent = 0.1
+
+            # Create the combined objective function
+            prob += weight_roi * total_roi - weight_spent * total_spent
 
         prob += lpSum([chosen_investments[i] * investment_costs[i] for i in range(number_of_investment_options)]) <= self.available_capital, "Investment_Limit"
         prob += lpSum([chosen_investments[i] * low_risk_category[i] for i in range(number_of_investment_options)]) >= self.minimum_per_category[0], "Low_Risk_Min"
@@ -65,16 +68,7 @@ class InvestmentOptimizer:
         self.high_risk_category = high_risk_category
 
     def solve(self):
-        # Solve the problem
-        self.prob.solve(pulp.PULP_CBC_CMD(msg=False))
-        
-        # Check if the problem has an optimal solution
-        if LpStatus[self.prob.status] == "Optimal":
-            # If the problem is solved and optimal, then store the current solution vector
-            current_solution = [int(self.chosen_investments[i].value()) for i in range(len(self.data))]
-            self.previous_solutions.append(current_solution)
-        else:
-            raise Exception('The problem is infeasible.')
+        self.prob.solve(pulp.PULP_CBC_CMD(msg=True))
         
     def get_results(self):
         if self.prob.status != LpStatusOptimal:
@@ -116,19 +110,13 @@ class InvestmentOptimizer:
         print(f"Available - Spent = {self.available_minus_spent}")
         print(f"Status: {LpStatus[self.prob.status]}")
         self.status = LpStatus[self.prob.status]
-            
+        
         return solution
 
     def save_results(self, solution):
-        df = pd.DataFrame([solution])
+        df = pd.DataFrame([solution])  # Notice the brackets around solution, it makes solution a row instead of a column
         df.to_csv('solutions.csv', index=False, header=False)
-        
-    def save_multiple_results(self, solution, csv_file):
-        df = pd.DataFrame([solution])
-        df.to_csv(csv_file, mode='a', header=False, index=False)
-        
 
-        
 if __name__ == "__main__":
     try:
         optimizer = InvestmentOptimizer('data.csv', available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1], singleobjective = True)

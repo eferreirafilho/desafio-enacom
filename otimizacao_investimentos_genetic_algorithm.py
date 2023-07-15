@@ -4,7 +4,9 @@ from deap import base, creator, tools, algorithms
 import random
 
 class GeneticAlgorithmOptimizer:
-    def __init__(self, data, available_capital, cost_limit, minimum_per_category):
+    def __init__(self, data, available_capital, cost_limit, minimum_per_category, singleobjective, previous_solution=None):
+        self.previous_solutions = []
+
         if data is None:
             raise ValueError("No data provided")
         if isinstance(data, str):
@@ -36,9 +38,10 @@ class GeneticAlgorithmOptimizer:
         medium_risk_category = [1 if r == 1 else 0 for r in self.data['Risk'].values]  # Medium risk investments
         high_risk_category = [1 if r == 2 else 0 for r in self.data['Risk'].values]  # High risk investments
 
-        # define the problem as an optimization problem
-        creator.create("FitnessMax", base.Fitness, weights=(1.0,))  # maximization problem
-        creator.create("Individual", list, fitness=creator.FitnessMax)
+        if not hasattr(creator, "FitnessMax"):
+            creator.create("FitnessMax", base.Fitness, weights=(1.0,))
+        if not hasattr(creator, "Individual"):
+            creator.create("Individual", list, fitness=creator.FitnessMax)
 
         # decision variables 
         self.toolbox.register("attr_bool", random.randint, 0, 1)
@@ -63,7 +66,14 @@ class GeneticAlgorithmOptimizer:
             if total_low_risk < self.minimum_per_category[0] or total_med_risk < self.minimum_per_category[1] or total_high_risk < self.minimum_per_category[2]:
                 return -1,  # invalid solution
             if total_low_risk_cost > self.cost_limit[0] or total_med_risk_cost > self.cost_limit[1] or total_high_risk_cost > self.cost_limit[2]:
-                return -1,  # invalid solution
+                return -1,  # invalid solution 
+            
+            print(self.previous_solutions)
+            
+            if self.previous_solutions:
+                for previous_solution in self.previous_solutions:
+                    if individual == previous_solution:
+                        return -1 # old solutions are invalid solutions
             return total_roi,
 
         # operator definitions
@@ -90,7 +100,7 @@ class GeneticAlgorithmOptimizer:
 
         self.pop, self.log = algorithms.eaSimple(pop, self.toolbox, cxpb=0.5, mutpb=0.2, ngen=20, stats=stats, halloffame=hof, verbose=True)
         self.hof = hof
-
+        
     def get_results(self):
         valid_solutions = [ind for ind in self.hof if ind.fitness.values[0] != -1]
 
@@ -99,6 +109,7 @@ class GeneticAlgorithmOptimizer:
             return None
 
         best_solution = max(valid_solutions, key=lambda ind: ind.fitness.values[0])
+        self.previous_solutions.append(best_solution)
 
         total_spent = np.dot(best_solution, self.investment_costs)
         total_return = np.dot(best_solution, self.return_of_investments)
@@ -119,7 +130,11 @@ class GeneticAlgorithmOptimizer:
     def save_results(self, solution):
         df = pd.DataFrame([solution])  # Notice the brackets around solution, it makes solution a row instead of a column
         df.to_csv('solutions.csv', index=False, header=False)
-
+        
+    def save_multiple_results(self, solution, csv_file):
+        df = pd.DataFrame([solution])
+        df.to_csv(csv_file, mode='a', header=False, index=False)
+        
 if __name__ == "__main__":
     try:
         optimizer = GeneticAlgorithmOptimizer('data.csv', available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1])
