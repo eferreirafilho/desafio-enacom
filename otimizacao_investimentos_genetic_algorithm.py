@@ -8,22 +8,22 @@ class GeneticAlgorithmOptimizer:
         self.previous_solutions = []
 
         if data is None:
-            raise ValueError("No data provided")
+            raise ValueError("Carregar dados primeiro")
         if isinstance(data, str):
             try:
                 self.data = pd.read_csv(data, sep=';', header=None, names=['Investment', 'Cost', 'Return', 'Risk'])
             except FileNotFoundError:
-                raise ValueError(f"Could not find data file: {data}")
+                raise ValueError(f"Falha ao encontrar arquivo de dados: {data}")
             except Exception as e:
-                print(f"Error loading data file: {e}")
+                print(f"Erro ao carregar o arquivo de dados: {e}")
                 raise
         else:
-            raise TypeError("Data should be a file path (str).")
+            raise TypeError("Erro sevem ser uma string (str).")
         if self.data.empty:
-            raise ValueError("Data file is empty")
+            raise ValueError("Arquivo de dados está vazio")
         
         if not isinstance(available_capital, (int, float)) or available_capital <= 0:
-            raise ValueError("Available capital should be a positive number.")
+            raise ValueError("capital disponível deve ser inteiro positivo")
 
         self.available_capital = available_capital
         self.cost_limit = cost_limit
@@ -105,7 +105,7 @@ class GeneticAlgorithmOptimizer:
         valid_solutions = [ind for ind in self.hof if ind.fitness.values[0] != -1]
 
         if not valid_solutions:
-            print("No valid solution found.")
+            print("Solução válida não encontrada.")
             return None
 
         best_solution = max(valid_solutions, key=lambda ind: ind.fitness.values[0])
@@ -117,13 +117,13 @@ class GeneticAlgorithmOptimizer:
         total_med_risk = np.dot(best_solution, self.medium_risk_category)
         total_high_risk = np.dot(best_solution, self.high_risk_category)
 
-        print(f"\nBest solution:")
+        print(f"\nMelhor solução:")
         print(f"Total ROI = {total_return}")
-        print(f"Total Spent = {total_spent}")
-        print(f"Available - Spent = {self.available_capital - total_spent}")
-        print(f"Total Low Risk Investments = {total_low_risk}")
-        print(f"Total Medium Risk Investments = {total_med_risk}")
-        print(f"Total High Risk Investments = {total_high_risk}")
+        print(f"Total Gasto = {total_spent}")
+        print(f"Disponível - Gasto = {self.available_capital - total_spent}")
+        print(f"Total Investimento de baixo risco = {total_low_risk}")
+        print(f"Total Investimento de médio risco = {total_med_risk}")
+        print(f"Total Investimento de alto risco = {total_high_risk}")
         
         return best_solution
 
@@ -143,4 +143,4 @@ if __name__ == "__main__":
         solution = optimizer.get_results()
         optimizer.save_results(solution)
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"Um erro ocorreu: {e}")

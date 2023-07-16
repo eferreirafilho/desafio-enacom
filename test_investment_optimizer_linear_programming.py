@@ -23,7 +23,7 @@ class TestInvestmentOptimizer(unittest.TestCase):
         with open(self.test_file, 'w') as f:
             f.write(self.test_data)
 
-        self.optimizer = InvestmentOptimizer(self.test_file, available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1])
+        self.optimizer = InvestmentOptimizer(self.test_file, available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1], singleobjective=True)
         self.optimizer.define_problem()
         self.optimizer.solve()
         self.optimizer.get_results()
@@ -49,26 +49,26 @@ class TestInvestmentOptimizer(unittest.TestCase):
 
     def test_invalid_input_file(self):
         with self.assertRaises(ValueError):
-            optimizer = InvestmentOptimizer("", available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1])
+            optimizer = InvestmentOptimizer("", available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1], singleobjective=True)
 
     def test_file_not_found(self):
         with self.assertRaises(ValueError):
-            optimizer = InvestmentOptimizer("non_existent.csv", available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1])
+            optimizer = InvestmentOptimizer("non_existent.csv", available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1], singleobjective=True)
 
     def test_empty_data_file(self):
         with open('empty.csv', 'w') as f:
             pass
         with self.assertRaises(ValueError):
-            optimizer = InvestmentOptimizer('empty.csv', available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1])
+            optimizer = InvestmentOptimizer('empty.csv', available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1], singleobjective=True)
         os.remove('empty.csv')
 
     def test_invalid_available_capital(self):
         with self.assertRaises(ValueError):
-            optimizer = InvestmentOptimizer(self.test_file, available_capital = -2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1])
+            optimizer = InvestmentOptimizer(self.test_file, available_capital = -2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1], singleobjective=True)
 
     def test_infeasible_problem(self):
         with self.assertRaises(ValueError):
-            optimizer = InvestmentOptimizer(self.test_file, available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [20, 20, 20])
+            optimizer = InvestmentOptimizer(self.test_file, available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [20, 20, 20], singleobjective=True)
             optimizer.define_problem()
             optimizer.solve()
             optimizer.get_results()

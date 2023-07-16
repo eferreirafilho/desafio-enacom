@@ -5,12 +5,12 @@ class InvestmentOptimizer:
     def __init__(self, data, available_capital, cost_limit, minimum_per_category, singleobjective, previous_solution=None):
         self.previous_solutions = [] 
         if data is None:
-            raise ValueError("No data provided")
+            raise ValueError("Carregar Dados!")
         if isinstance(data, str):
             try:
                 self.data = pd.read_csv(data, sep=';', header=None, names=['Investment', 'Cost', 'Return', 'Risk'])
             except FileNotFoundError:
-                raise ValueError(f"Could not find data file: {data}")
+                raise ValueError(f"Falha ao encontrar arquivo de dados: {data}")
             except Exception as e:
                 print(f"Error loading data file: {e}")
                 raise
@@ -20,7 +20,7 @@ class InvestmentOptimizer:
             raise ValueError("Data file is empty")
         
         if not isinstance(available_capital, (int, float)) or available_capital <= 0:
-            raise ValueError("Available capital should be a positive number.")
+            raise ValueError("Capital disponível deve ser um inteiro positivo!")
 
         self.singleobjective = singleobjective
         self.available_capital = available_capital
@@ -47,7 +47,7 @@ class InvestmentOptimizer:
                 prob += (lpSum(chosen_investments[i] for i in range(len(self.data)) if previous_solution[i] == 1) <= len(previous_solution) - 2)
                 prob += (lpSum(chosen_investments[i] for i in range(len(self.data)) if previous_solution[i] == 0) >= 1)
         
-        # Maximize ROI
+        # Maximizar ROI
         prob += lpSum([chosen_investments[i] * return_of_investments[i] for i in range(number_of_investment_options)])
 
         prob += lpSum([chosen_investments[i] * investment_costs[i] for i in range(number_of_investment_options)]) <= self.available_capital, "Investment_Limit"
@@ -74,11 +74,11 @@ class InvestmentOptimizer:
             current_solution = [int(self.chosen_investments[i].value()) for i in range(len(self.data))]
             self.previous_solutions.append(current_solution)
         else:
-            raise Exception('The problem is infeasible.')
+            raise ValueError('O problema não é viável.')
         
     def get_results(self):
         if self.prob.status != LpStatusOptimal:
-            raise ValueError('The problem is infeasible.')
+            raise ValueError('O problema não é viável.')
         total_spent = 0
         total_roi = 0  # Initialize total ROI
         solution = []  # For storing the solution
@@ -90,7 +90,7 @@ class InvestmentOptimizer:
             if self.chosen_investments[i].value() == 1.0:
                 investment_info = self.data.iloc[i]
                 risk_category = risk_dict[investment_info['Risk']] 
-                print(f"Investment {i + 1}  - Cost: {investment_info['Cost']}, Return: {investment_info['Return']}, Risk: {risk_category}")
+                print(f"Investimento {i + 1}  - Custo: {investment_info['Cost']}, Retorno: {investment_info['Return']}, Risco: {risk_category}")
 
                 total_spent += investment_info['Cost']
                 total_roi += investment_info['Return']  # Add the return of the chosen investment to total ROI
@@ -112,8 +112,8 @@ class InvestmentOptimizer:
             print(f"{category}: {investment_list}")
 
         print(f"\nTotal ROI = {self.total_roi}")
-        print(f"Total Spent = {self.total_spent}")
-        print(f"Available - Spent = {self.available_minus_spent}")
+        print(f"Total Gasto = {self.total_spent}")
+        print(f"Disponível  - Gasto = {self.available_minus_spent}")
         print(f"Status: {LpStatus[self.prob.status]}")
         self.status = LpStatus[self.prob.status]
             
@@ -126,7 +126,15 @@ class InvestmentOptimizer:
     def save_multiple_results(self, solution, csv_file):
         df = pd.DataFrame([solution])
         df.to_csv(csv_file, mode='a', header=False, index=False)
+
         
+    def clear_old_results(self, csv_file):
+        # Verifica se o arquivo existe
+        if os.path.exists(csv_file):
+            # Se o arquivo existe, remove-o
+            os.remove(csv_file)
+        else:
+            print(f"O arquivo {csv_file} não existe")
 
         
 if __name__ == "__main__":
@@ -137,4 +145,4 @@ if __name__ == "__main__":
         solution = optimizer.get_results()  # Get the solution
         optimizer.save_results(solution)  # Save the solution to a CSV file
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"Um erro ocorreu!: {e}")
