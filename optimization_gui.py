@@ -6,8 +6,8 @@ from tkinter.ttk import Combobox, Treeview
 import tkinter.font as font
 from pulp import LpStatusOptimal, LpStatus
 from generate_fake_data import generate_fake_data
-from otimizacao_investimentos_linear_programming import InvestmentOptimizer
-from otimizacao_investimentos_genetic_algorithm import GeneticAlgorithmOptimizer
+from otimizacao_investimentos_prog_linear import InvestmentOptimizer
+from programacao_investimentos_algo_genetico import GeneticAlgorithmOptimizer
 from multiple_solutions_LP import get_n_best_solutions
 
 import os

@@ -1,8 +1,8 @@
 import unittest
 from unittest import mock
 from unittest.mock import patch
-from otimizacao_investimentos_linear_programming import InvestmentOptimizer
-from otimizacao_investimentos_genetic_algorithm import GeneticAlgorithmOptimizer
+from otimizacao_investimentos_prog_linear import InvestmentOptimizer
+from programacao_investimentos_algo_genetico import GeneticAlgorithmOptimizer
 from optimization_gui import Application  # Assuming app.py is the file containing the code
 
 class TestApplication(unittest.TestCase):

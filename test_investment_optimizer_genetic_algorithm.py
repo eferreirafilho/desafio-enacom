@@ -1,5 +1,5 @@
 import unittest
-from otimizacao_investimentos_genetic_algorithm import GeneticAlgorithmOptimizer
+from programacao_investimentos_algo_genetico import GeneticAlgorithmOptimizer
 import os
 import pandas as pd
 

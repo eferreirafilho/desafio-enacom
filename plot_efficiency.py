@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from otimizacao_investimentos_linear_programming import InvestmentOptimizer
+from otimizacao_investimentos_prog_linear import InvestmentOptimizer
 import csv
 
 CAPITAL_START = 1000

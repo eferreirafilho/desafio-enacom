@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Import the modified InvestmentOptimizer class
-from otimizacao_investimentos_linear_programming import InvestmentOptimizer
+from otimizacao_investimentos_prog_linear import InvestmentOptimizer
 
 def get_n_best_solutions(n, data='data.csv', available_capital=2400000, cost_limit=[1200000, 1500000, 900000], minimum_per_category=[2, 2, 1], singleobjective=True):
     optimizer = InvestmentOptimizer(data, available_capital, cost_limit, minimum_per_category, singleobjective)
