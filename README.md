@@ -1,5 +1,4 @@
-# Desafio-enacom
-Desafio enacom de otimização e Python
+# Desafio ENACOM de otimização e Python
 
 
 Este projeto é uma aplicação de otimização de investimentos que usa programação linear e algoritmo genético para encontrar o melhor conjunto de investimentos baseado no capital disponível, limite de custo e mínimo por categoria. Esta aplicação é implementada em Python e usa a biblioteca tkinter para a interface gráfica do usuário.
@@ -27,7 +26,12 @@ A aplicação será iniciada e você verá a interface gráfica do usuário.
 
 ![Alt text](/images/image-5.png)
 
-Selecione os dados que você deseja usar na otimização. Por padrão, você pode escolher entre "data.csv" e "fake_data.csv".
+Selecione os dados que você deseja usar na otimização. Por padrão, você pode escolher entre "data.csv" e "fake_data.csv"
+
+Chamamos de "problema padrão", a seguinte instância (Esta é a instância salva em data.csv.):
+
+![Alt text](/images/enacom.png)
+
 Digite o capital disponível, limite de custo e mínimo por categoria.
 Escolha o tipo de solver que deseja usar: Programação Linear (Determinístico, Ótimo) ou Algoritmo Genético (Estocástico).
 Clique no botão "Resolver" para iniciar a otimização. A solução será salva em um arquivo CSV.
@@ -35,38 +39,40 @@ Você pode visualizar a solução clicando no botão "Visualizar Solução".
 Se você deseja gerar e usar dados falsos, insira o número de pontos de dados falsos e clique em "Gerar Dados Falsos".
 A aplicação também suporta múltiplas soluções. Para habilitar isso, marque a opção 'Múltiplas soluções' e digite o número de soluções desejadas.
 
-Também é possível executar o a solução de Programação Linear ou o Algoroithm genético separadament, basta executar os arquivos *otimizacao_investimentos_prog_linear.py* ou *programacao_investimentos_algo_genetico.py*, respectivamente.
-
-
+Também é possível executar o a solução de Programação Linear ou o algoritmo genético separadamente, basta executar os arquivos *otimizacao_investimentos_prog_linear.py* ou *programacao_investimentos_algo_genetico.py*, respectivamente.
 
 ## Funcionalidades
 
-Carregar Dados: Permite que o usuário carregue os dados a serem usados na otimização.
-Gerar Dados Falsos: Gera um conjunto de dados falsos com base no número de pontos de dados falsos fornecidos pelo usuário.
-Resolver: Inicia a otimização com base nos parâmetros fornecidos pelo usuário.
-Visualizar Solução: Mostra a solução da otimização em uma tabela.
-Múltiplas Soluções: Fornece a opção de obter múltiplas soluções para o problema de otimização.
+**Carregar Dados:** Permite que o usuário carregue os dados a serem usados na otimização.
+
+**Gerar Dados Falsos:** Gera um conjunto de dados falsos com base no número de pontos de dados falsos fornecidos pelo usuário.
+
+**Resolver:** Inicia a otimização com base nos parâmetros fornecidos pelo usuário.
+
+**Visualizar Solução:** Mostra a solução da otimização em uma tabela.
+
+**Múltiplas Soluções:** Fornece a opção de obter múltiplas soluções para o problema de otimização.
 
 ## Resultados (problema padrão)
 
-Investimento 1  - Custo: 470.000, Retorno: 410000, Risco: Baixo
-Investimento 2  - Custo: 400.000, Retorno: 330000, Risco: Baixo
-Investimento 4  - Custo: 270.000, Retorno: 250000, Risco: Médio
-Investimento 5  - Custo: 340.000, Retorno: 320000, Risco: Médio
-Investimento 6  - Custo: 230.000, Retorno: 320000, Risco: Médio
-Investimento 7  - Custo: 50.000, Retorno: 90000, Risco: Médio
-Investimento 9  - Custo: 320.000, Retorno: 120000, Risco: Alto
-Investimento 13  - Custo: 300.000, Retorno: 380000, Risco: Médio
+- Investimento 1  - Custo: 470.000, Retorno: 410000, Risco: Baixo
+- Investimento 2  - Custo: 400.000, Retorno: 330000, Risco: Baixo
+- Investimento 4  - Custo: 270.000, Retorno: 250000, Risco: Médio
+- Investimento 5  - Custo: 340.000, Retorno: 320000, Risco: Médio
+- Investimento 6  - Custo: 230.000, Retorno: 320000, Risco: Médio
+- Investimento 7  - Custo: 50.000, Retorno: 90000, Risco: Médio
+- Investimento 9  - Custo: 320.000, Retorno: 120000, Risco: Alto
+- Investimento 13  - Custo: 300.000, Retorno: 380000, Risco: Médio
 
 Investimentos por categoria de risco:
 Baixo: [1, 2]
 Médio: [4, 5, 6, 7, 13]
 Alto: [9]
 
-Total ROI = 2.220.000
-Total Gasto = 2.380.000
-Disponível  - Gasto = 20.000
-Status: Solução Ótima
+- Total ROI = 2.220.000
+- Total Gasto = 2.380.000
+- Disponível  - Gasto = 20.000
+- Status: Solução Ótima
 
 Variando capital disponível:
 
