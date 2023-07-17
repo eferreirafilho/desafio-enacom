@@ -105,6 +105,16 @@ class Application(tk.Tk):
         except ValueError:
             messagebox.showerror("Erro", "A entrada deve ser um número flutuante.")
             return None
+        
+    def validate_list_length(self, value, expected_length):
+        try:
+            value_list = eval(value)
+            if len(value_list) != expected_length:
+                raise ValueError
+            return value_list
+        except ValueError:
+            messagebox.showerror("Erro", f"A entrada deve ser uma lista de {expected_length} números.")
+            return None
 
     def load_data(self):
         self.selected_data_option = self.data_cb.get()
@@ -135,8 +145,8 @@ class Application(tk.Tk):
     def solve(self):
         try:
             available_capital = self.validate_float(self.available_capital_entry.get())
-            cost_limit = [self.validate_positive_integer(x) for x in eval(self.cost_limit_entry.get())]
-            minimum_per_category = [self.validate_positive_integer(x) for x in eval(self.minimum_per_category_entry.get())]
+            cost_limit = [self.validate_positive_integer(x) for x in self.validate_list_length(self.cost_limit_entry.get(), 3)]
+            minimum_per_category = [self.validate_positive_integer(x) for x in self.validate_list_length(self.minimum_per_category_entry.get(), 3)]
 
             if None in cost_limit or None in minimum_per_category or available_capital is None:
                 return
@@ -164,7 +174,6 @@ class Application(tk.Tk):
                 self.optimizer.save_results(solution)
         except Exception as e: 
             messagebox.showerror("Erro", f"Erro enquanto resolvendo: {str(e)}")
-
 
     def view_solution(self):
         try:
