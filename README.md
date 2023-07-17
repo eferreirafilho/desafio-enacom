@@ -98,20 +98,14 @@ Pontos vermelhos (menos dinheiro gasto para o mesmo ROI):
 
 ## Testes Unitários
 
-- Preparação e Finalização: Criação e remoção de um arquivo .csv de teste para manter o ambiente limpo.
+- Verifica se o problema de otimização foi definido corretamente.
+- Confere se a resolução do problema de otimização retorna um estado ótimo.
+- Testa se o retorno dos resultados está correto e assegura que as variáveis estejam dentro dos limites pré-definidos.
+- Verifica se a classe retorna um erro quando o arquivo de entrada não é válido.
+- Confere se a classe retorna um erro quando o arquivo de entrada não existe.
+- Testa se a classe retorna um erro quando o arquivo de dados está vazio.
+- Verifica se a classe retorna um erro quando o capital disponível é inválido.
+- Confere se a classe retorna um erro quando o capital disponível é zero.
+- Verifica se a classe retorna um erro quando o mínimo por categoria é inviável.
+- Confere se a classe retorna um erro quando os limites de custo são inviáveis.
 
-- Definição do Problema: Verificação da correta definição do problema.
-
-- Resolução: Confirmação do funcionamento correto do solucionador, verificando se retorna o status ótimo.
-
-- Obtenção de Resultados: Verificação da correta cálculo dos valores esperados.
-
-- Arquivo de Entrada Inválido: Teste do comportamento da classe com arquivos inválidos.
-
-- Arquivo Não Encontrado: Avaliação do tratamento da classe com arquivos inexistentes.
-
-- Arquivo de Dados Vazio: Análise do tratamento da classe com arquivos de dados vazios.
-
-- Capital Disponível Inválido: Verificação da classe ao lidar com capital disponível negativo.
-
-- Problema Inviável: Avaliação de como a classe lida com problemas matematicamente inviáveis.

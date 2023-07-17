@@ -5,7 +5,6 @@ import pandas as pd
 
 class TestInvestmentOptimizer(unittest.TestCase):
     def setUp(self):
-        # Write test data into a csv file
         self.test_file = "test_data.csv"
         self.test_data = """1;470000;410000;0
                             2;400000;330000;0
@@ -45,7 +44,7 @@ class TestInvestmentOptimizer(unittest.TestCase):
         self.assertEqual(self.optimizer.total_roi, expected_roi)
         self.assertEqual(self.optimizer.total_spent, expected_spent)
         self.assertEqual(self.optimizer.available_minus_spent, expected_available_minus_spent)
-        self.assertEqual(self.optimizer.status, expected_status)  # Now this should work
+        self.assertEqual(self.optimizer.status, expected_status)
 
     def test_invalid_input_file(self):
         with self.assertRaises(ValueError):
@@ -66,9 +65,20 @@ class TestInvestmentOptimizer(unittest.TestCase):
         with self.assertRaises(ValueError):
             optimizer = InvestmentOptimizer(self.test_file, available_capital = -2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1], singleobjective=True)
 
-    def test_infeasible_problem(self):
+    def test_invalid_capital_zero(self):
+        with self.assertRaises(ValueError):
+            optimizer = InvestmentOptimizer(self.test_file, available_capital = 0, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [2, 2, 1], singleobjective=True)
+
+    def test_infeasible_minimum(self):
         with self.assertRaises(ValueError):
             optimizer = InvestmentOptimizer(self.test_file, available_capital = 2400000, cost_limit = [1200000, 1500000, 900000], minimum_per_category = [20, 20, 20], singleobjective=True)
+            optimizer.define_problem()
+            optimizer.solve()
+            optimizer.get_results()
+            
+    def test_infeasible_cost_limits(self):
+        with self.assertRaises(ValueError):
+            optimizer = InvestmentOptimizer(self.test_file, available_capital = 2400000, cost_limit = [1200, 15000, 9000], minimum_per_category = [2, 2, 2], singleobjective=True)
             optimizer.define_problem()
             optimizer.solve()
             optimizer.get_results()
