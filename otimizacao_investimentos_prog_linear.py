@@ -18,6 +18,8 @@ class InvestmentOptimizer:
             raise TypeError("Data should be a file path (str).")
         if self.data.empty:
             raise ValueError("Data file is empty")
+        if (self.data[['Cost', 'Return', 'Risk']] < 0).any().any():
+            raise ValueError("Valores negativos não permitidos nos dados!")
         
         if not isinstance(available_capital, (int, float)) or available_capital <= 0:
             raise ValueError("Capital disponível deve ser um inteiro positivo!")
