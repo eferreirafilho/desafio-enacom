@@ -1,4 +1,4 @@
-# Desafio ENACOM de otimização e Python
+# Desafio de otimização e Python
 
 
 Este projeto é uma aplicação de otimização de investimentos que usa programação linear e algoritmo genético para encontrar o melhor conjunto de investimentos baseado no capital disponível, limite de custo e mínimo por categoria. Esta aplicação é implementada em Python e usa a biblioteca tkinter para a interface gráfica do usuário.
