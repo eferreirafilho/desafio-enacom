@@ -1,111 +1,111 @@
-# Desafio de otimização e Python
+# Optimization and Python Challenge
 
 
-Este projeto é uma aplicação de otimização de investimentos que usa programação linear e algoritmo genético para encontrar o melhor conjunto de investimentos baseado no capital disponível, limite de custo e mínimo por categoria. Esta aplicação é implementada em Python e usa a biblioteca tkinter para a interface gráfica do usuário.
-Requisitos
+This project is an investment optimization application that uses linear programming and genetic algorithm to find the best set of investments based on available capital, cost limit and minimum per category. This application is implemented in Python and uses the tkinter library for the graphical user interface.
+Requirements
 
-    Python 3.x
-    Bibliotecas Python: pandas, tkinter, pulp, numpy, matplotlib, deap
+     Python 3.x
+     Python libraries: pandas, tkinter, pulp, numpy, matplotlib, deap
 
 
-## Instruções de Instalação
+## Installation Instructions
 
-Clone este repositório ou faça o download do código-fonte.
-Certifique-se de que o Python esteja instalado no seu sistema.
-Instale as bibliotecas necessárias. Se você estiver usando pip, você pode fazer isso executando
+Clone this repository or download the source code.
+Make sure Python is installed on your system.
+Install the necessary libraries. If you are using pip you can do this by running
 
-    pip install pandas tkinter pulp numpy matplotlib deap.
+     pip install pandas tkinter pulp numpy matplotlib deap.
 
-## Como usar
+## How to use
 
-Execute o arquivo python 
+Run the python file
 
-    optimization_gui.py
+     optimization_gui.py
 
-A aplicação será iniciada e você verá a interface gráfica do usuário.
+The application will launch and you will see the graphical user interface.
 
 ![Alt text](/images/image-5.png)
 
-Selecione os dados que você deseja usar na otimização. Por padrão, você pode escolher entre "data.csv" e "fake_data.csv"
+Select the data you want to use for optimization. By default you can choose between "data.csv" and "fake_data.csv"
 
-Chamamos de "problema padrão", a seguinte instância (Esta é a instância salva em data.csv.):
+We call the following instance "standard problem" (This is the instance saved in data.csv.):
 
 ![Alt text](/images/enacom.png)
 
-Digite o capital disponível, limite de custo e mínimo por categoria.
-Escolha o tipo de solver que deseja usar: Programação Linear (Determinístico, Ótimo) ou Algoritmo Genético (Estocástico).
-Clique no botão "Resolver" para iniciar a otimização. A solução será salva em um arquivo CSV.
-Você pode visualizar a solução clicando no botão "Visualizar Solução".
-Se você deseja gerar e usar dados falsos, insira o número de pontos de dados falsos e clique em "Gerar Dados Falsos".
-A aplicação também suporta múltiplas soluções. Para habilitar isso, marque a opção 'Múltiplas soluções' e digite o número de soluções desejadas.
+Enter the available capital, cost limit and minimum per category.
+Choose the type of solver you want to use: Linear Programming (Deterministic, Optimal) or Genetic Algorithm (Stochastic).
+Click the "Resolve" button to start optimization. The solution will be saved to a CSV file.
+You can preview the solution by clicking the "View Solution" button.
+If you want to generate and use fake data, enter the number of fake data points and click "Generate Fake Data".
+The application also supports multiple solutions. To enable this, check the 'Multiple solutions' option and enter the number of solutions desired.
 
-Também é possível executar o a solução de Programação Linear ou o algoritmo genético separadamente, basta executar os arquivos *otimizacao_investimentos_prog_linear.py* ou *programacao_investimentos_algo_genetico.py*, respectivamente.
+It is also possible to run the Linear Programming solution or the genetic algorithm separately, just run the files *otimizacao_investimentos_prog_linear.py* or *programacao_investimentos_algo_genetico.py*, respectively.
 
-## Funcionalidades
+## Functionalities
 
-**Carregar Dados:** Permite que o usuário carregue os dados a serem usados na otimização.
+**Load Data:** Allows the user to load data to be used in optimization.
 
-**Gerar Dados Falsos:** Gera um conjunto de dados falsos com base no número de pontos de dados falsos fornecidos pelo usuário.
+**Generate Fake Data:** Generates a set of fake data based on the number of fake data points provided by the user.
 
-**Resolver:** Inicia a otimização com base nos parâmetros fornecidos pelo usuário.
+**Solve:** Starts optimization based on user-supplied parameters.
 
-**Visualizar Solução:** Mostra a solução da otimização em uma tabela.
+**View Solution:** Shows the optimization solution in a table.
 
-**Múltiplas Soluções:** Fornece a opção de obter múltiplas soluções para o problema de otimização.
+**Multiple Solutions:** Provides the option to obtain multiple solutions to the optimization problem.
 
-## Resultados (problema padrão)
+## Results (standard problem)
 
-- Investimento 1  - Custo: 470.000, Retorno: 410000, Risco: Baixo
-- Investimento 2  - Custo: 400.000, Retorno: 330000, Risco: Baixo
-- Investimento 4  - Custo: 270.000, Retorno: 250000, Risco: Médio
-- Investimento 5  - Custo: 340.000, Retorno: 320000, Risco: Médio
-- Investimento 6  - Custo: 230.000, Retorno: 320000, Risco: Médio
-- Investimento 7  - Custo: 50.000, Retorno: 90000, Risco: Médio
-- Investimento 9  - Custo: 320.000, Retorno: 120000, Risco: Alto
-- Investimento 13  - Custo: 300.000, Retorno: 380000, Risco: Médio
+- Investment 1 - Cost: 470,000, Return: 410000, Risk: Low
+- Investment 2 - Cost: 400,000, Return: 330000, Risk: Low
+- Investment 4 - Cost: 270,000, Return: 250000, Risk: Medium
+- Investment 5 - Cost: 340,000, Return: 320000, Risk: Medium
+- Investment 6 - Cost: 230,000, Return: 320000, Risk: Medium
+- Investment 7 - Cost: 50,000, Return: 90000, Risk: Medium
+- Investment 9 - Cost: 320,000, Return: 120000, Risk: High
+- Investment 13 - Cost: 300,000, Return: 380000, Risk: Medium
 
-Investimentos por categoria de risco:
-Baixo: [1, 2]
-Médio: [4, 5, 6, 7, 13]
-Alto: [9]
+Investments by risk category:
+Low: [1, 2]
+Medium: [4, 5, 6, 7, 13]
+High: [9]
 
-- Total ROI = 2.220.000
-- Total Gasto = 2.380.000
-- Disponível  - Gasto = 20.000
-- Status: Solução Ótima
+- Total ROI = 2,220,000
+- Total Spent = 2,380,000
+- Available - Spent = 20,000
+- Status: Optimal Solution
 
-Variando capital disponível:
+Varying available capital:
 
 ![Alt text](/images/image.png)
 
-## Outras Análises
+## Other Analysis
 
-### Maximizar ROI e maximizar efficiência
+### Maximize ROI and maximize efficiency
 
 ![Alt text](/images/image-1.png)
 
-### Maximizar ROI e minimizar risco
+### Maximize ROI and minimize risk
 
 ![Alt text](/images/image-2.png)
 
-### Maximizar ROI e minimizar gastos
+### Maximize ROI and minimize expenses
 
 ![Alt text](/images/image-3.png)
 
-Pontos vermelhos (menos dinheiro gasto para o mesmo ROI):
+Red dots (less money spent for the same ROI):
 
 ![Alt text](/images/image-4.png)
 
-## Testes Unitários
+## Unitary tests
 
-- Verifica se o problema de otimização foi definido corretamente.
-- Confere se a resolução do problema de otimização retorna um estado ótimo.
-- Testa se o retorno dos resultados está correto e assegura que as variáveis estejam dentro dos limites pré-definidos.
-- Verifica se a classe retorna um erro quando o arquivo de entrada não é válido.
-- Confere se a classe retorna um erro quando o arquivo de entrada não existe.
-- Testa se a classe retorna um erro quando o arquivo de dados está vazio.
-- Verifica se a classe retorna um erro quando o capital disponível é inválido.
-- Confere se a classe retorna um erro quando o capital disponível é zero.
-- Verifica se a classe retorna um erro quando o mínimo por categoria é inviável.
-- Confere se a classe retorna um erro quando os limites de custo são inviáveis.
+- Checks whether the optimization problem has been defined correctly.
+- Checks whether solving the optimization problem returns an optimal state.
+- Tests whether the results are returned correctly and ensures that the variables are within pre-defined limits.
+- Checks if the class returns an error when the input file is not valid.
+- Checks if the class returns an error when the input file does not exist.
+- Tests whether the class returns an error when the data file is empty.
+- Checks if the class returns an error when the available capital is invalid.
+- Checks if the class returns an error when the available capital is zero.
+- Checks if the class returns an error when the minimum per category is unfeasible.
+- Checks whether the class returns an error when the cost limits are unfeasible.
 
